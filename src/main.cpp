@@ -9,6 +9,8 @@
 using nlohmann::json;
 using std::string;
 
+PID Twiddle(PID pid);
+
 // For converting back and forth between radians and degrees.
 constexpr double pi() { return M_PI; }
 double deg2rad(double x) { return x * pi() / 180; }
@@ -37,6 +39,10 @@ int main() {
   /**
    * TODO: Initialize the pid variable.
    */
+  double init_Kp = -0.1109;
+  double init_Ki = -0.0003;
+  double init_Kd = -1.54;
+  pid.Init(init_Kp, init_Ki, init_Kd);
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
                      uWS::OpCode opCode) {
@@ -63,7 +69,52 @@ int main() {
            * NOTE: Feel free to play around with the throttle and speed.
            *   Maybe use another PID controller to control the speed!
            */
-          
+          PID a = pid;
+          PID copy_pid = PID(pid);
+          std::vector<double> dp(3, 1);
+          std::vector<double> p(3, 0);
+          double threshold = 0.001;
+          double best_error = copy_pid.TotalError();
+          double err = 0;
+
+          double sum_of_elems = 0;
+          std::for_each(dp.begin(), dp.end(), [&] (double n) {sum_of_elems += n;});
+
+          while (sum_of_elems > threshold) {
+            for(int i = 0; i < dp.size(); i++ ) {
+              p[i] += dp[i];
+              copy_pid.ModifyK(i, p[i]);
+              err = copy_pid.TotalError();
+
+              if (err < best_error) {
+                best_error = err;
+                dp[i] *= 1.1;
+              } else {
+                p[i] -= 2*dp[i];
+                copy_pid.ModifyK(i, p[i]);
+                err = copy_pid.TotalError();
+
+                if (err < best_error) {
+                  best_error = err;
+                  dp[i] *= 1.05;
+                } else {
+                  p[i] += dp[i];
+                  copy_pid.ModifyK(i, p[i]);
+                  dp[i] *= 0.95;
+                }
+              }
+            }
+
+            sum_of_elems = 0;
+            std::for_each(dp.begin(), dp.end(), [&] (double n) {sum_of_elems += n;});
+          }
+
+          pid.setKd(p[0]);
+          pid.setKd(p[1]);
+          pid.setKd(p[2]);
+
+          pid.UpdateError(cte);
+          steer_value = pid.TotalError();
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value 
                     << std::endl;
