@@ -32,30 +32,6 @@ class PID {
    */
   double TotalError();
 
-  /**
-   * Modify Kx value : 0 => Kp, 1 => Ki, 2 => Kd
-   * Used in koef optimization
-   */
-  void ModifyK(int i, double value);
-
-  void setKp(double kp);
-
-  void setKi(double ki);
-
-  void setKd(double kd);
-
-    double getKp() const;
-
-    double getKi() const;
-
-    double getKd() const;
-
-    double getPError() const;
-
-    double getIError() const;
-
-    double getDError() const;
-
 private:
   /**
    * PID Errors
