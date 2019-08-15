@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
   double init_Kp = atof(argv[1]);
   double init_Ki = atof(argv[2]);
   double init_Kd = atof(argv[3]);
-  const double max_throttle = 0.4;
+  const double max_throttle = 0.5;
 
 //  double init_Kp = 0.05;
 //  double init_Ki = 0.00001;
