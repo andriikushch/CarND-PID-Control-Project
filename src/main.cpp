@@ -41,16 +41,16 @@ int main(int argc, char* argv[]) {
   double init_Kp = atof(argv[1]);
   double init_Ki = atof(argv[2]);
   double init_Kd = atof(argv[3]);
-  double throttle = 0.3;
+  const double max_throttle = 0.4;
 
 //  double init_Kp = 0.05;
 //  double init_Ki = 0.00001;
 //  double init_Kd = 0.3;
 
   pid.Init(init_Kp, init_Ki, init_Kd);
-  pid_t.Init(0.2, 0, 5.5);
+  pid_t.Init(0.3, 0, 4.5);
 
-  h.onMessage([&pid, &pid_t, &throttle](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
+  h.onMessage([&pid, &pid_t, &max_throttle](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                      uWS::OpCode opCode) {
       // "42" at the start of the message means there's a websocket message event.
       // The 4 signifies a websocket message
@@ -79,11 +79,22 @@ int main(int argc, char* argv[]) {
             pid.UpdateError(cte);
             pid_t.UpdateError(cte);
             steer_value = pid.TotalError();
-            throttle = 0.3 - abs(pid_t.TotalError());
 
             // DEBUG
             std::cout << "CTE: " << cte << " Steering Value: " << steer_value << " total error " << pid.TotalError()
                       << std::endl;
+
+            double throttle = max_throttle - abs(pid_t.TotalError());
+
+            if (throttle < 0.05) {
+              throttle = 0.05;
+            }
+
+            if (steer_value > 1) {
+              steer_value = 1;
+            } else if(steer_value < -1) {
+              steer_value = -1;
+            }
 
             json msgJson;
             msgJson["steering_angle"] = steer_value;
