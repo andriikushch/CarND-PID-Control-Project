@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
 //  double init_Kd = 0.3;
 
   pid.Init(init_Kp, init_Ki, init_Kd);
-  pid_t.Init(0.3, 0, 4.5);
+  pid_t.Init(0.6, 0, 4.5);
 
   h.onMessage([&pid, &pid_t, &max_throttle](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                      uWS::OpCode opCode) {
