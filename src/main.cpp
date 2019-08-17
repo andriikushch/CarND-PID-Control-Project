@@ -35,17 +35,15 @@ int main(int argc, char* argv[]) {
 
   PID pid;
   PID pid_t;
-  /**
-   * TODO: Initialize the pid variable.
-   */
-  double init_Kp = atof(argv[1]);
-  double init_Ki = atof(argv[2]);
-  double init_Kd = atof(argv[3]);
+
+//  double init_Kp = atof(argv[1]);
+//  double init_Ki = atof(argv[2]);
+//  double init_Kd = atof(argv[3]);
   const double max_throttle = 0.5;
 
-//  double init_Kp = 0.05;
-//  double init_Ki = 0.00001;
-//  double init_Kd = 0.3;
+  double init_Kp = 0.09;
+  double init_Ki = 0;
+  double init_Kd = 0.09;
 
   pid.Init(init_Kp, init_Ki, init_Kd);
   pid_t.Init(0.6, 0, 4.5);
@@ -69,12 +67,6 @@ int main(int argc, char* argv[]) {
             double speed = std::stod(j[1]["speed"].get<string>());
             double angle = std::stod(j[1]["steering_angle"].get<string>());
             double steer_value;
-            /**
-             * TODO: Calculate steering value here, remember the steering value is
-             *   [-1, 1].
-             * NOTE: Feel free to play around with the throttle and speed.
-             *   Maybe use another PID controller to control the speed!
-             */
 
             pid.UpdateError(cte);
             pid_t.UpdateError(cte);
