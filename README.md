@@ -6,7 +6,7 @@ The goal of this project is to write a PID controller for the car on the road an
 
 ![pid.gif](pid.gif)
 
-video [pid.mov](pid.mov)
+[video](pid.mov)
 
 ## P, I and D
 
@@ -22,7 +22,8 @@ High values for P will make a car oscillating around the middle of the road, sma
 High values for I will "collect" error impact very quickly and will drive car out from the road. This component is useful for a biased system, which is not a case for the simulator.
 
 ![pid-bi.gif](pid-bi.gif)
-video [pid-bi.mov](pid-bi.mov)
+
+[video](pid-bi.mov)
 
 ### 3. D
 
@@ -30,7 +31,7 @@ High values for D will cause "sharp" turns:
 
 ![pid-bd.gif](pid-bd.gif)
 
-video [pid-bd.mov](pid-bd.mov)
+[video](pid-bd.mov)
 
 
 While low values will not compensate for increasing of deviation enough.
